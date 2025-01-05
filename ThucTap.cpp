@@ -66,48 +66,7 @@ void drawFreeformLine(const vector<pair<int, int> >& points, int color) {
   }
 }
 
-bool isPointInTriangle(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3) {
-  // Tinh S tam giac
-  int areaOrig = abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
 
-  // Tinh S 3 tam giac nho
-  int area1 = abs(px * (y2 - y3) + x2 * (y3 - py) + x3 * (py - y2));
-  int area2 = abs(x1 * (py - y3) + px * (y3 - y1) + x3 * (y1 - py));
-  int area3 = abs(x1 * (y2 - py) + x2 * (py - y1) + px * (y1 - y2));
-
-  // Kiem tra dien tich cua 3 tam giac nho co bang tam giac lon
-  return (area1 + area2 + area3 == areaOrig);
-}
-bool isPointInStar(int px, int py, int cx, int cy, int radius_outer, int radius_inner) {
-  const int numPoints = 5;  // So dinh cua ngôi sao
-  double angle = M_PI / numPoints;
-  int x[2 * numPoints], y[2 * numPoints];
-
-  // Tinh toa do các dinh cua ngoi sao
-  for (int i = 0; i < 2 * numPoints; i++) {
-    double r = (i % 2 == 0) ? radius_outer : radius_inner;
-    x[i] = cx + r * cos(i * angle - M_PI / 2);
-    y[i] = cy + r * sin(i * angle - M_PI / 2);
-  }
-
-  // Kiem tra tung tam giac tao boi tam và các canh cua ngoi sao
-  for (int i = 0; i < 2 * numPoints; i++) {
-    int next = (i + 1) % (2 * numPoints);
-    if (isPointInTriangle(px, py, cx, cy, x[i], y[i], x[next], y[next])) {
-      return true;
-    }
-  }
-
-  return false;  // Neu không nam trong tam giác nào, tra ve false
-}
-
-double distanceFromPointToLine(int px, int py, int x1, int y1, int x2, int y2) {
-  // Khoang cach tu diem den duong thang
-  double num = abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1);
-  double den = sqrt(pow(y2 - y1, 2) + pow(x2 - x1, 2));
-  return num / den;
-}
-double distanceBetweenPoints(int x1, int y1, int x2, int y2) { return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)); }
 
 void drawRectangleBresenham(int x1, int y1, int x2, int y2, int color) {
   drawLineBresenham(x1, y1, x2, y1, color);
@@ -164,7 +123,48 @@ void drawCurve(int startX, int startY, int endX, int endY, int numPoints, int co
   // Ve duong cong
   drawFreeformLine(points, color);
 }
+bool isPointInTriangle(int px, int py, int x1, int y1, int x2, int y2, int x3, int y3) {
+  // Tinh S tam giac
+  int areaOrig = abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
 
+  // Tinh S 3 tam giac nho
+  int area1 = abs(px * (y2 - y3) + x2 * (y3 - py) + x3 * (py - y2));
+  int area2 = abs(x1 * (py - y3) + px * (y3 - y1) + x3 * (y1 - py));
+  int area3 = abs(x1 * (y2 - py) + x2 * (py - y1) + px * (y1 - y2));
+
+  // Kiem tra dien tich cua 3 tam giac nho co bang tam giac lon
+  return (area1 + area2 + area3 == areaOrig);
+}
+bool isPointInStar(int px, int py, int cx, int cy, int radius_outer, int radius_inner) {
+  const int numPoints = 5;  // So dinh cua ngôi sao
+  double angle = M_PI / numPoints;
+  int x[2 * numPoints], y[2 * numPoints];
+
+  // Tinh toa do các dinh cua ngoi sao
+  for (int i = 0; i < 2 * numPoints; i++) {
+    double r = (i % 2 == 0) ? radius_outer : radius_inner;
+    x[i] = cx + r * cos(i * angle - M_PI / 2);
+    y[i] = cy + r * sin(i * angle - M_PI / 2);
+  }
+
+  // Kiem tra tung tam giac tao boi tam và các canh cua ngoi sao
+  for (int i = 0; i < 2 * numPoints; i++) {
+    int next = (i + 1) % (2 * numPoints);
+    if (isPointInTriangle(px, py, cx, cy, x[i], y[i], x[next], y[next])) {
+      return true;
+    }
+  }
+
+  return false;  // Neu không nam trong tam giác nào, tra ve false
+}
+
+double distanceFromPointToLine(int px, int py, int x1, int y1, int x2, int y2) {
+  // Khoang cach tu diem den duong thang
+  double num = abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1);
+  double den = sqrt(pow(y2 - y1, 2) + pow(x2 - x1, 2));
+  return num / den;
+}
+double distanceBetweenPoints(int x1, int y1, int x2, int y2) { return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)); }
 void drawInterface() {
   setcolor(WHITE);
 
