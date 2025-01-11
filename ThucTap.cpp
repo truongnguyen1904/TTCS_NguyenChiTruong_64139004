@@ -10,7 +10,7 @@ int startX, startY, endX, endY;
 bool isDrawing = false;
 
 int shape = 0;               // luu hinh ve duoc chon
-bool shapeSelected = false;  // ban dau chua chon hình
+bool shapeSelected = false;  // ban dau chua chon hÃ¬nh
 int currentColor = WHITE;    // mau ban dau la trang
 
 struct Shape {
@@ -76,7 +76,7 @@ void drawRectangleBresenham(int x1, int y1, int x2, int y2, int color) {
 }
 
 void drawCircleBresenham(int x_center, int y_center, int r, int color) {
-  int x = 0, y = r, d = 3 - 2 * r;
+  int x = 0, y = r, d = 3 - 2 * r; // sai so ban dau tinh tu pt duong tron  ( 1,r ) va ( 1,r-1 )
   while (x <= y) {
     putpixel(x_center + x, y_center + y, color);
     putpixel(x_center - x, y_center + y, color);
@@ -109,14 +109,14 @@ void drawStarBresenham(int x_center, int y_center, int radius, int color) {
     drawLineBresenham(x[i], y[i], x[next], y[next], color);
   }
 }
-// Hàm ve duong cong parabol don gian
+// HÃ m ve duong cong parabol don gian
 void drawCurve(int startX, int startY, int endX, int endY, int numPoints, int color) {
   vector<pair<int, int> > points;
 
 // Tao cac diem doc theo mot duong cong parabol
   for (int i = 0; i < numPoints; ++i) {
-    int x = startX + (endX - startX) * i / (numPoints - 1);        // Phân ph?i d?u các di?m theo chi?u ngang
-    int y = startY + (x - startX) * (x - endX) / (numPoints * 2);  // Công th?c t?o du?ng cong parabol
+    int x = startX + (endX - startX) * i / (numPoints - 1);        // PhÃ¢n ph?i d?u cÃ¡c di?m theo chi?u ngang
+    int y = startY + (x - startX) * (x - endX) / (numPoints * 2);  // CÃ´ng th?c t?o du?ng cong parabol
     points.push_back({x, y});
   }
 
@@ -136,18 +136,18 @@ bool isPointInTriangle(int px, int py, int x1, int y1, int x2, int y2, int x3, i
   return (area1 + area2 + area3 == areaOrig);
 }
 bool isPointInStar(int px, int py, int cx, int cy, int radius_outer, int radius_inner) {
-  const int numPoints = 5;  // So dinh cua ngôi sao
+  const int numPoints = 5;  // So dinh cua ngÃ´i sao
   double angle = M_PI / numPoints;
   int x[2 * numPoints], y[2 * numPoints];
 
-  // Tinh toa do các dinh cua ngoi sao
+  // Tinh toa do cÃ¡c dinh cua ngoi sao
   for (int i = 0; i < 2 * numPoints; i++) {
     double r = (i % 2 == 0) ? radius_outer : radius_inner;
     x[i] = cx + r * cos(i * angle - M_PI / 2);
     y[i] = cy + r * sin(i * angle - M_PI / 2);
   }
 
-  // Kiem tra tung tam giac tao boi tam và các canh cua ngoi sao
+  // Kiem tra tung tam giac tao boi tam vÃ  cÃ¡c canh cua ngoi sao
   for (int i = 0; i < 2 * numPoints; i++) {
     int next = (i + 1) % (2 * numPoints);
     if (isPointInTriangle(px, py, cx, cy, x[i], y[i], x[next], y[next])) {
@@ -155,7 +155,7 @@ bool isPointInStar(int px, int py, int cx, int cy, int radius_outer, int radius_
     }
   }
 
-  return false;  // Neu không nam trong tam giác nào, tra ve false
+  return false;  // Neu khÃ´ng nam trong tam giÃ¡c nÃ o, tra ve false
 }
 
 double distanceFromPointToLine(int px, int py, int x1, int y1, int x2, int y2) {
@@ -164,13 +164,16 @@ double distanceFromPointToLine(int px, int py, int x1, int y1, int x2, int y2) {
   double den = sqrt(pow(y2 - y1, 2) + pow(x2 - x1, 2));
   return num / den;
 }
-double distanceBetweenPoints(int x1, int y1, int x2, int y2) { return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)); }
+double distanceBetweenPoints(int x1, int y1, int x2, int y2) 
+	{ return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)); }
+
+
 void drawInterface() {
   setcolor(WHITE);
 
   int drawingAreaHeight = getmaxy();
 
-  // Thanh công cu
+  // Thanh cÃ´ng cu
   rectangle(0, 0, getmaxx(), 60);
   setfillstyle(SOLID_FILL, LIGHTGRAY);
   floodfill(20, 20, WHITE);
@@ -180,22 +183,22 @@ void drawInterface() {
   rectangle(10, 10, 100, 50);
   drawLineBresenham(20, 30, 90, 30, WHITE);
 
-  // Nut ve hình chu nhat
+  // Nut ve hÃ¬nh chu nhat
   rectangle(110, 10, 200, 50);
   drawRectangleBresenham(120, 20, 190, 40, WHITE);
 
-  // Nut ve hình tròn
+  // Nut ve hÃ¬nh trÃ²n
   rectangle(210, 10, 300, 50);
   drawCircleBresenham(255, 30, 15, WHITE);
 
-  // Nut ve hình tam giác
+  // Nut ve hÃ¬nh tam giÃ¡c
   rectangle(310, 10, 400, 50);
   int x1 = 355, y1 = 15, x2 = 325, y2 = 45, x3 = 385, y3 = 45;
   drawLineBresenham(x1, y1, x2, y2, WHITE);
   drawLineBresenham(x2, y2, x3, y3, WHITE);
   drawLineBresenham(x3, y3, x1, y1, WHITE);
 
-  // Nut ve ngôi sao
+  // Nut ve ngÃ´i sao
   rectangle(410, 10, 500, 50);
   const int numPoints = 5;
   int cx = 455, cy = 30, radius = 20;
@@ -203,7 +206,7 @@ void drawInterface() {
 
   // Nut ve tu do
   rectangle(510, 10, 600, 50);
-  drawCurve(510, 30, 600, 130, 100, WHITE);  // 100 di?m, màu tr?ng
+  drawCurve(510, 30, 600, 130, 100, WHITE);  // 100 di?m, mÃ u tr?ng
 
   // Nut cuc tay
   rectangle(610, 10, 700, 50);
@@ -248,25 +251,22 @@ void handleMouseClick(int x, int y) {
 // Kiem tra cac nut hinh
     if (x >= 10 && x <= 100)
       shape = 1;  // Chon duong thang
-
     else if (x >= 110 && x <= 200)
       shape = 2;  // Chon hinh vuong
     else if (x >= 210 && x <= 300)
       shape = 3;  // Chon hinh tron
     else if (x >= 310 && x <= 400)
-      shape = 4;  // Chon tam giác
+      shape = 4;  // Chon tam giÃ¡c
     else if (x >= 410 && x <= 500)
-      shape = 5;  // Chon ngôi sao
+      shape = 5;  // Chon ngÃ´i sao
     else if (x >= 510 && x <= 600)
       shape = 6;  // Chon ve tu do
-
     // Chon cuc tay
     else if (x >= 610 && x <= 700) {
       shape = 0;             // Bo chon hinh
       currentColor = WHITE;  
     }
-
-    // Ch?n màu
+    // Chon mÃ u
     else if (x >= 710 && x <= 750)
       currentColor = RED;  // Mau do
     else if (x >= 760 && x <= 800)
@@ -281,14 +281,6 @@ void handleMouseClick(int x, int y) {
       currentColor = CYAN;  // Mau xanh nhat
     else if (x >= 1010 && x <= 1050)
       currentColor = WHITE;
-    if (shape == 6 && isDrawing) {
-      // Luu các diem ve tu do
-      Shape freeDrawShape;
-      freeDrawShape.type = 6;
-      freeDrawShape.points.push_back({x, y});
-      freeDrawShape.color = currentColor;
-      shapes.push_back(freeDrawShape);
-    }
 
     shapeSelected = true;  
   }
@@ -301,51 +293,13 @@ void drawShape() {
 
   if (!shapeSelected) return;  // neu hinh chua duoc chon => khong ve
 
-  // ve giao dien
   for (size_t i = 0; i < shapes.size(); ++i) {
     const Shape& s = shapes[i];
     if (s.type == 6) {  // Ve tu do
       drawFreeformLine(s.points, s.color);
     }
   }
-
   // ve lai cac hinh da luu
-
-  for (int i = 0; i < shapes.size(); i++) {
-    Shape s = shapes[i];
-    // kiem tra hinh co nam trong vung ve khong
-    if (s.x1 < 10 || s.y1 < 60 || s.x2 > getmaxx() || s.y2 > getmaxy()) {
-      continue;  // bo qua hinh neu nam ngoai vung ve
-    }
-
-    // ve hinh dua tren loai hinh
-
-    switch (s.type) {
-      case 1:
-        drawLineBresenham(s.x1, s.y1, s.x2, s.y2, s.color);
-        break;
-      case 2:
-        drawRectangleBresenham(s.x1, s.y1, s.x2, s.y2, s.color);
-        break;
-      case 3:
-        drawCircleBresenham(s.x1, s.y1, s.radius, s.color);
-        break;
-      case 4: {
-        int size = abs(s.x2 - s.x1);
-        int height = static_cast<int>(size * sqrt(3) / 2);
-        int x1 = s.x1, y1 = s.y1 - height;
-        int x2 = s.x1 - size / 2, y2 = s.y1 + height / 2;
-        int x3 = s.x1 + size / 2, y3 = s.y1 + height / 2;
-        drawLineBresenham(x1, y1, x2, y2, s.color);
-        drawLineBresenham(x2, y2, x3, y3, s.color);
-        drawLineBresenham(x3, y3, x1, y1, s.color);
-        break;
-      }
-      case 5:
-        drawStarBresenham(s.x1, s.y1, s.radius, s.color);
-        break;
-    }
-  }  
   if (startY > 60 && endY >= 60 && endX >= 10 && endX <= getmaxx() - 10) {
     if (shape == 0) {
       for (int i = 0; i < shapes.size(); i++) {
@@ -413,7 +367,7 @@ void drawShape() {
 
 // Neu khoang cach nho hon 5 pixel, xoa toan bo duong tu do
             if (distance < 5) {
-              shapes.erase(shapes.begin() + i);  // xóa toàn bo duong tu do
+              shapes.erase(shapes.begin() + i);  // xÃ³a toÃ n bo duong tu do
               cleardevice();
               drawInterface();
               drawShape();
@@ -427,17 +381,18 @@ void drawShape() {
     // neu la duong tu do
 
     else {
+    	//tranh ve de nhieu hinh mot luc tao hieu ung bong ma
       if (shape != 6) {
         cleardevice();  
         drawInterface();
         for (size_t i = 0; i < shapes.size(); ++i) {
           const Shape& s = shapes[i];
           // Ve lai cac duong tu do
-          if (s.type == 6) {  // Ðuong tu do
+          if (s.type == 6) {  // Ãuong tu do
             drawFreeformLine(s.points, s.color);
           }
         }
-      } 
+      } // ve lai hinh khac o trang thai cuoi cung
       switch (shape) {
         case 1:
           drawLineBresenham(startX, startY, endX, endY, currentColor);
@@ -467,6 +422,7 @@ void drawShape() {
       }
     }
   }
+  //ve lai tat ca hinh sau khi ve mot hinh moi    
   for (int i = 0; i < shapes.size(); i++) {
     Shape s = shapes[i];
     // kiem tra hinh co nam trong vung ve khong
@@ -502,7 +458,6 @@ void drawShape() {
         break;
     }
   }
-// Neu dang ve duong tu do, them cac diem vao danh sach diem cua duong tu do
 }
 int main() {
   int gd = DETECT, gm;
@@ -552,7 +507,6 @@ int main() {
     }
 
     if (ismouseclick(WM_LBUTTONUP)) {
-      drawShape();
       int x, y;
       getmouseclick(WM_LBUTTONUP, x, y);
       endX = x;
@@ -569,9 +523,6 @@ int main() {
       } else if (shape == 1 || shape == 2 || shape == 4) {
         shapes.push_back({shape, startX, startY, endX, endY, 0, currentColor});
       } else if (shape == 6) {
-       // Duong tu do
-// Khi the chuot, chi can them diem cuoi
-
         if (!shapes.empty() && shapes.back().type == 6) {
           shapes.back().points.push_back({endX, endY});
         }
@@ -581,13 +532,12 @@ int main() {
       drawShape();
       clearmouseclick(WM_LBUTTONUP);
     }
-// Kiem tra nhan chuot de xoa duong tu do neu can
 
     // kiem tra khi thoat
     if (kbhit()) {
       char key = getch();
       if (key == 27) {  // = nut ESC
-        break;          // Thoát chuong trình
+        break;          // ThoÃ¡t chuong trÃ¬nh
       }
     }
   }
@@ -595,4 +545,3 @@ int main() {
   closegraph();  // dong cua so do hoa
   return 0;
 }
-
